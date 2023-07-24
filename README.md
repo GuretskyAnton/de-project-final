@@ -23,3 +23,22 @@
 - `/src/sql` - сюда вложите SQL-запрос формирования таблиц в `STAGING`- и `DWH`-слоях, а также скрипт подготовки данных для итоговой витрины.
 - `/src/py` - если источником вы выберете Kafka, то в этой папке разместите код запуска генерации и чтения данных в топик.
 - `/src/img` - здесь разместите скриншот реализованного над витриной дашборда.
+
+docker run -d -p 8998:8998 -p 8280:8280 -p 15432:5432 --name=de-final-prj-local cr.yandex/crp1r8pht0n0gl25aug1/de-final-prj:latest
+
+
+### Комментариии к реализации
+
+1. Шаг 3. Пункт 6. Проверьте, что ежедневные данные инкрементами загружены в схему *__STAGING хранилища.
+	Не получилось выполнить 
+	`SELECT DROP_PARTITIONS('STV2023060656__STAGING.{table}', '{execut_date}', '{execut_date}', 'true');`
+	Получаю ошибку:
+	`vertica_python.errors.InsufficientResources: Severity: ERROR, Message: Memory budget is not enough for` 
+	`partition projection operation with group expression`
+	`Current resource pool: user_1, memory budget: 46357 KB, memory required: 65472 KB`
+	Для очистки использую:
+	`DELETE FROM STV2023060656__STAGING.{table}`
+    `WHERE {column_dt}::date = '{execut_date}';`
+
+2. 
+
